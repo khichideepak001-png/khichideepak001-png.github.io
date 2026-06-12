@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Home Office Blog — Ergonomic Tips, Setup Guides & Reviews | ErgoElite</title>
+  <meta name="description" content="ErgoElite's home office blog. Expert ergonomic tips, workspace setup guides, product reviews and comparisons for remote workers."/>
+  <meta name="robots" content="index, follow"/>
+  <link rel="stylesheet" href="css/style.css"/>
+  <style>
+    .blog-grid { display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:28px;margin-top:32px; }
+    .blog-card { background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-lg);overflow:hidden;transition:var(--transition);display:flex;flex-direction:column; }
+    .blog-card:hover { border-color:var(--border-accent);transform:translateY(-4px);box-shadow:0 12px 40px rgba(0,0,0,0.3); }
+    .blog-card-img { width:100%;height:200px;object-fit:cover;background:var(--surface-2); }
+    .blog-card-body { padding:24px;flex:1;display:flex;flex-direction:column; }
+    .blog-card-category { font-size:0.75rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--accent);font-weight:600;margin-bottom:8px; }
+    .blog-card-title { font-size:1.1rem;font-weight:700;line-height:1.4;color:var(--text-primary);margin-bottom:10px;text-decoration:none;transition:var(--transition); }
+    .blog-card-title:hover { color:var(--accent); }
+    .blog-card-excerpt { font-size:0.9rem;color:var(--text-muted);line-height:1.6;flex:1;margin-bottom:16px; }
+    .blog-card-meta { font-size:0.78rem;color:var(--text-muted);display:flex;gap:12px;align-items:center; }
+    .blog-card-read-link { color:var(--accent);text-decoration:none;font-weight:600;font-size:0.85rem;transition:var(--transition); }
+    .blog-card-read-link:hover { color:#f0c740; }
+  </style>
+</head>
+<body>
+<nav class="nav"><div class="container"><div class="nav-inner">
+  <a href="index.html" class="nav-logo">Ergo<span>Elite</span></a>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="reviews/best-standing-desks.html">Standing Desks</a></li>
+    <li><a href="reviews/best-ergonomic-chairs.html">Chairs</a></li>
+    <li><a href="blog.html" class="active">Blog</a></li>
+  </ul>
+  <div class="nav-cta" id="navCta"><a href="reviews/home-office-setup-guide.html" class="btn btn-primary btn-sm">Setup Guide →</a></div>
+  <button class="hamburger" id="hamburger"><span></span><span></span><span></span></button>
+</div></div></nav>
+
+<main style="padding:48px 0 80px;">
+  <div class="container">
+    <div class="fade-in mb-32">
+      <span class="badge badge-accent mb-16">ErgoElite Blog</span>
+      <h1>Home Office <span class="text-accent">Guides & Reviews</span></h1>
+      <p style="color:var(--text-secondary);font-size:1.05rem;margin-top:12px;">Expert ergonomic tips, buying guides, product comparisons, and workspace setup ideas. Everything you need to build the perfect home office.</p>
+    </div>
+
+    <!-- Featured Post -->
+    <div class="fade-in" style="background:var(--surface);border:1px solid var(--border-accent);border-radius:var(--radius-xl);overflow:hidden;margin-bottom:48px;display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:280px;">
+      <div style="padding:40px;">
+        <span class="badge badge-accent mb-16" style="display:inline-block;">📌 Featured Guide</span>
+        <h2 style="font-size:1.6rem;margin-bottom:12px;line-height:1.3;">The Ultimate Home Office Setup Guide 2026</h2>
+        <p style="color:var(--text-secondary);line-height:1.7;margin-bottom:24px;">Step-by-step guide to building the perfect ergonomic workspace — desk height, monitor positioning, chair setup, lighting, and the best products at every budget level.</p>
+        <a href="reviews/home-office-setup-guide.html" class="btn btn-primary">Read the Full Guide →</a>
+      </div>
+      <div style="background:var(--surface-2);display:flex;align-items:center;justify-content:center;">
+        <img src="assets/hero-office.jpg" alt="Perfect home office setup guide" style="width:100%;height:100%;object-fit:cover;"
+          onerror="this.style.display='none';" />
+      </div>
+    </div>
+
+    <!-- Blog Grid -->
+    <h2 class="fade-in" style="margin-bottom:0;">Latest Reviews & Guides</h2>
+    <div class="blog-grid fade-in">
+
+      <div class="blog-card">
+        <img src="assets/standing-desk-hero.jpg" class="blog-card-img" alt="Best standing desks 2026"
+          onerror="this.style.background='var(--surface-3)';this.style.height='140px';" />
+        <div class="blog-card-body">
+          <div class="blog-card-category">Standing Desks</div>
+          <a href="reviews/best-standing-desks.html" class="blog-card-title">5 Best Standing Desks of 2026 — Ranked After Testing</a>
+          <p class="blog-card-excerpt">We spent 6 months testing 12 standing desks. These 5 are the best — from budget picks under $600 to the ultimate premium option at $1,299+.</p>
+          <div class="blog-card-meta">
+            <span>June 2026</span>
+            <span>·</span>
+            <span>12 min read</span>
+            <a href="reviews/best-standing-desks.html" class="blog-card-read-link" style="margin-left:auto;">Read →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="blog-card">
+        <img src="assets/ergonomic-chair-hero.jpg" class="blog-card-img" alt="Best ergonomic chairs 2026"
+          onerror="this.style.background='var(--surface-3)';this.style.height='140px';" />
+        <div class="blog-card-body">
+          <div class="blog-card-category">Ergonomic Chairs</div>
+          <a href="reviews/best-ergonomic-chairs.html" class="blog-card-title">10 Best Ergonomic Chairs of 2026 — Tested for 8+ Hours Daily</a>
+          <p class="blog-card-excerpt">We tested 18 ergonomic chairs with a physical therapist to find the best for back pain, all-day comfort, and long-term durability. Rankings inside.</p>
+          <div class="blog-card-meta">
+            <span>June 2026</span>
+            <span>·</span>
+            <span>15 min read</span>
+            <a href="reviews/best-ergonomic-chairs.html" class="blog-card-read-link" style="margin-left:auto;">Read →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-card-body" style="padding-top:28px;">
+          <div class="blog-card-category">In-Depth Review</div>
+          <a href="reviews/uplift-v2-review.html" class="blog-card-title">Uplift V2 Commercial Review — Is It Worth $1,299?</a>
+          <p class="blog-card-excerpt">Our 3-month hands-on Uplift V2 Commercial review with stability measurements, motor noise tests, and assembly guide. The most thorough review you'll find.</p>
+          <div class="blog-card-meta">
+            <span>June 2026</span>
+            <span>·</span>
+            <span>10 min read</span>
+            <a href="reviews/uplift-v2-review.html" class="blog-card-read-link" style="margin-left:auto;">Read →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-card-body" style="padding-top:28px;">
+          <div class="blog-card-category">In-Depth Review</div>
+          <a href="reviews/herman-miller-aeron-review.html" class="blog-card-title">Herman Miller Aeron Review — Is It Worth $1,695?</a>
+          <p class="blog-card-excerpt">6 months of daily use with consultation from a physical therapist. The most complete Aeron review online, including sizing guide and Aeron vs Steelcase Leap comparison.</p>
+          <div class="blog-card-meta">
+            <span>June 2026</span>
+            <span>·</span>
+            <span>11 min read</span>
+            <a href="reviews/herman-miller-aeron-review.html" class="blog-card-read-link" style="margin-left:auto;">Read →</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="blog-card">
+        <div class="blog-card-body" style="padding-top:28px;">
+          <div class="blog-card-category">Value Picks</div>
+          <a href="reviews/flexispot-e7-review.html" class="blog-card-title">FlexiSpot E7 Pro Review — Best Standing Desk Under $700?</a>
+          <p class="blog-card-excerpt">Can the FlexiSpot E7 Pro match the Uplift V2 at less than half the price? We tested stability, motor noise, and build quality to find out.</p>
+          <div class="blog-card-meta">
+            <span>June 2026</span>
+            <span>·</span>
+            <span>9 min read</span>
+            <a href="reviews/flexispot-e7-review.html" class="blog-card-read-link" style="margin-left:auto;">Read →</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Placeholder for upcoming articles — shows the content roadmap visually -->
+      <div class="blog-card" style="opacity:0.6;border-style:dashed;">
+        <div class="blog-card-body" style="padding-top:28px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;min-height:200px;">
+          <div style="font-size:2rem;margin-bottom:12px;">✍️</div>
+          <div class="blog-card-category">Coming Soon</div>
+          <div class="blog-card-title" style="text-decoration:none;cursor:default;">Uplift V2 vs FlexiSpot E7 Pro — Ultimate Comparison</div>
+          <p class="blog-card-excerpt">Side-by-side stability test, motor noise comparison, and final pick for every budget.</p>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="disclosure-box fade-in" style="margin-top:48px;">
+      <strong>Affiliate Disclosure:</strong> As an Amazon Associate I earn from qualifying purchases. Product links throughout this site are affiliate links that help fund independent testing. <a href="disclosure.html">Full disclosure →</a>
+    </div>
+  </div>
+</main>
+
+<footer class="footer"><div class="container">
+  <div class="footer-grid">
+    <div class="footer-brand"><div class="nav-logo">Ergo<span>Elite</span></div><p>Independent premium home office reviews since 2024.</p></div>
+    <div class="footer-col"><h4>Reviews</h4><ul><li><a href="reviews/best-standing-desks.html">Standing Desks</a></li><li><a href="reviews/best-ergonomic-chairs.html">Chairs</a></li><li><a href="reviews/home-office-setup-guide.html">Setup Guide</a></li></ul></div>
+    <div class="footer-col"><h4>Legal</h4><ul><li><a href="disclosure.html">Disclosure</a></li><li><a href="privacy.html">Privacy</a></li><li><a href="about.html">About</a></li><li><a href="contact.html">Contact</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><p>© 2026 ErgoElite.</p><p>As an Amazon Associate I earn from qualifying purchases.</p></div>
+</div></footer>
+<script src="js/main.js"></script>
+</body>
+</html>

@@ -557,6 +557,24 @@ p:last-child { margin-bottom: 0; }
 }
 .top-pick-inner { display: grid; grid-template-columns: auto 1fr auto; gap: 24px; align-items: center; }
 
+/* ─── ClickBank Banner ─── */
+.cb-banner {
+  background: linear-gradient(135deg, rgba(217,70,239,0.1), rgba(217,70,239,0.02));
+  border: 2px solid #d946ef; border-radius: var(--radius-lg);
+  padding: 32px; position: relative; overflow: hidden;
+  display: grid; grid-template-columns: 1fr 300px; gap: 32px; align-items: center;
+  box-shadow: 0 10px 40px rgba(217,70,239,0.15);
+}
+.cb-banner-content h3 { color: #d946ef; font-size: 1.6rem; margin-bottom: 12px; }
+.cb-banner-content p { color: var(--text-primary); font-size: 1.05rem; }
+.cb-banner-content ul li { color: var(--text-secondary); }
+.cb-banner-img { height: 100%; min-height: 200px; border-radius: var(--radius-md); overflow: hidden; }
+
+@media (max-width: 768px) {
+  .cb-banner { grid-template-columns: 1fr; }
+  .cb-banner-img { height: 250px; }
+}
+
 /* ─── Progress Bar (page reading) ─── */
 .reading-progress {
   position: fixed; top: 0; left: 0; width: 0%; height: 3px;

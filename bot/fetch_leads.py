@@ -1,69 +1,65 @@
-from playwright.sync_api import sync_playwright
-import os
+import urllib.request
+import xml.etree.ElementTree as ET
 import json
+import os
 import sys
 
 def main():
-    target_subs = ["OfficeChairs", "StandingDesk"]
-    state_path = os.path.join(os.path.dirname(__file__), "state.json")
-    
-    if not os.path.exists(state_path):
-        print("Error: state.json not found. Please run login.py first.")
-        sys.exit(1)
-        
-    print("Fetching new leads from Reddit...")
+    target_subs = ["OfficeChairs", "StandingDesk", "workfromhome", "desksetup"]
     leads = []
     
-    with sync_playwright() as p:
-        browser = p.chromium.launch(
-            headless=True,
-            channel="chrome",
-            args=["--disable-blink-features=AutomationControlled"]
+    # We broaden the keywords heavily to catch buying intent
+    keywords = [
+        "recommendation", "advice", "help me choose", "buying", "what should i buy",
+        "pain", "sciatica", "wrist", "neck", "back", "ergonomic", "upgrade",
+        "best chair", "best desk", "cheap chair", "budget desk", "carpal tunnel"
+    ]
+    
+    print("Fetching new leads via RSS backdoor...")
+    
+    for sub in target_subs:
+        url = f"https://www.reddit.com/r/{sub}/new.rss"
+        print(f"Scanning r/{sub} feed...")
+        req = urllib.request.Request(
+            url, 
+            headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
         )
-        context = browser.new_context(
-            storage_state=state_path,
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-        )
-        page = context.new_page()
-        
-        # Scan subreddits for specific pain points instead of just 'new'
-        search_queries = [
-            "wrist pain", "eye strain", "neck pain", "lower back pain",
-            "cheap upgrade", "lumbar support", "sciatica sitting", 
-            "tailbone pain", "carpal tunnel typing", "desk clutter",
-            "cable management", "slouching at desk"
-        ]
-        
-        for sub in target_subs:
-            for query in search_queries:
-                print(f"Scanning r/{sub} for '{query}'...")
-                page.goto(f"https://www.reddit.com/r/{sub}/search/?q={query.replace(' ', '%20')}&restrict_sr=1&sort=new")
-                try:
-                    page.wait_for_selector("shreddit-post", timeout=5000)
-                    posts = page.locator("shreddit-post").all()
-                    for post in posts[:3]:  # Get top 3 per query
-                        title = post.get_attribute("post-title")
-                        permalink = post.get_attribute("permalink")
-                        post_id = post.get_attribute("id")
-                        
-                        if title and permalink and post_id not in [l['id'] for l in leads]:
-                            leads.append({
-                                "sub": sub,
-                                "query": query,
-                                "title": title,
-                                "url": f"https://www.reddit.com{permalink}",
-                                "id": post_id
-                            })
-                            
-                    if len(leads) >= 10:
+        try:
+            response = urllib.request.urlopen(req).read()
+            root = ET.fromstring(response)
+            
+            # XML namespace for atom
+            ns = {'atom': 'http://www.w3.org/2005/Atom'}
+            
+            for entry in root.findall('atom:entry', ns):
+                title = entry.find('atom:title', ns).text
+                link = entry.find('atom:link', ns).attrib['href']
+                post_id = entry.find('atom:id', ns).text
+                content_elem = entry.find('atom:content', ns)
+                content = content_elem.text if content_elem is not None else ""
+                
+                title_lower = (title or "").lower()
+                content_lower = (content or "").lower()
+                
+                # Check if any broad keyword matches
+                matched_query = None
+                for kw in keywords:
+                    if kw in title_lower or kw in content_lower:
+                        matched_query = kw
                         break
-                except:
-                    continue
-            if len(leads) >= 10:
-                break
-        
-        browser.close()
-        
+                        
+                if matched_query and post_id not in [l.get('id') for l in leads]:
+                    leads.append({
+                        "sub": sub,
+                        "query": matched_query,
+                        "title": title,
+                        "url": link,
+                        "id": post_id
+                    })
+                    
+        except Exception as e:
+            print(f"Failed to fetch r/{sub}: {e}")
+            
     print("\n--- NEW LEADS ---")
     print(json.dumps(leads, indent=2))
     

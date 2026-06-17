@@ -23,18 +23,18 @@ def main():
         
         # Wait for the user to log in
         print("\n" + "="*50)
-        print("🛑 ACTION REQUIRED IN BROWSER 🛑")
+        print("[!] ACTION REQUIRED IN BROWSER [!]")
         print("Please log into your Reddit account in the browser window that just opened.")
         print("Once you are fully logged in and see the Reddit homepage...")
         print("="*50 + "\n")
         
-        input("👉 PRESS ENTER HERE ONCE YOU HAVE LOGGED IN... ")
+        input("> PRESS ENTER HERE ONCE YOU HAVE LOGGED IN... ")
         
         # Save the authentication state
         state_path = os.path.join(os.path.dirname(__file__), "state.json")
         context.storage_state(path=state_path)
         
-        print(f"\n✅ Success! Your login session has been saved to: {state_path}")
+        print(f"\n[OK] Success! Your login session has been saved to: {state_path}")
         print("You can now close the browser.")
         
         browser.close()

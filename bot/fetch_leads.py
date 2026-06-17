@@ -3,6 +3,7 @@ import xml.etree.ElementTree as ET
 import json
 import os
 import sys
+import time
 
 def main():
     target_subs = ["OfficeChairs", "StandingDesk", "workfromhome", "desksetup"]
@@ -22,9 +23,10 @@ def main():
         print(f"Scanning r/{sub} feed...")
         req = urllib.request.Request(
             url, 
-            headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'}
+            headers={'User-Agent': f'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 ErgoBot/{sub}'}
         )
         try:
+            time.sleep(60)
             response = urllib.request.urlopen(req).read()
             root = ET.fromstring(response)
             

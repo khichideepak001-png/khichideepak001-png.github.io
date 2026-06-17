@@ -16,29 +16,22 @@ def main():
         print("\n!!! IMPORTANT: DO NOT CLOSE THE BROWSER WINDOW !!!")
 
         try:
-            # 1. Quora
+            # 1. Pinterest
             print("\n" + "="*50)
-            print("🛑 1/2: QUORA LOGIN 🛑")
-            print("="*50)
-            page.goto("https://www.quora.com/")
-            input("👉 PRESS ENTER HERE ONCE YOU ARE LOGGED INTO QUORA... ")
-            
-            # 2. Pinterest
-            print("\n" + "="*50)
-            print("🛑 2/2: PINTEREST LOGIN 🛑")
+            print("[!] 1/1: PINTEREST LOGIN [!]")
             print("="*50)
             page.goto("https://www.pinterest.com/login/")
-            input("👉 PRESS ENTER HERE ONCE YOU ARE LOGGED INTO PINTEREST... ")
+            input("> PRESS ENTER HERE ONCE YOU ARE LOGGED INTO PINTEREST... ")
             
             # Save the master authentication state
             state_path = os.path.join(os.path.dirname(__file__), "state_all.json")
             context.storage_state(path=state_path)
             
-            print(f"\n✅ Success! All your login sessions have been saved to: {state_path}")
+            print(f"\n[OK] Success! All your login sessions have been saved to: {state_path}")
             print("You can now close the browser.")
             
         except Exception as e:
-            print(f"\n❌ Error during login: {e}")
+            print(f"\n[X] Error during login: {e}")
             
         finally:
             browser.close()

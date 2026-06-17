@@ -91,20 +91,6 @@
     "id": "t3_1u7c6jv"
   },
   {
-    "sub": "OfficeChairs",
-    "query": "upgrade",
-    "title": "Hinomi type clone?",
-    "url": "https://www.reddit.com/r/OfficeChairs/comments/1u7bp09/hinomi_type_clone/",
-    "id": "t3_1u7bp09"
-  },
-  {
-    "sub": "StandingDesk",
-    "query": "recommendation",
-    "title": "how do people actually alternate sitting and standing in real life?",
-    "url": "https://www.reddit.com/r/StandingDesk/comments/1u7x3de/how_do_people_actually_alternate_sitting_and/",
-    "id": "t3_1u7x3de"
-  },
-  {
     "sub": "StandingDesk",
     "query": "back",
     "title": "Apex Pro vs Apex Pro Max",
@@ -313,5 +299,12 @@
     "title": "Asking for help on recovery of desk mat",
     "url": "https://www.reddit.com/r/desksetup/comments/1u6lx7z/asking_for_help_on_recovery_of_desk_mat/",
     "id": "t3_1u6lx7z"
+  },
+  {
+    "sub": "desksetup",
+    "query": "back",
+    "title": "My Dual MacBook & Gaming Setup",
+    "url": "https://www.reddit.com/r/desksetup/comments/1u6g2kv/my_dual_macbook_gaming_setup/",
+    "id": "t3_1u6g2kv"
   }
 ]

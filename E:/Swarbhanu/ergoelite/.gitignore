@@ -1,0 +1,4 @@
+bot/*.json
+bot/video/*.json
+bot/video/auth_url.txt
+upload.ps1

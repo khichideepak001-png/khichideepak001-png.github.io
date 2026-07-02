@@ -23,36 +23,31 @@ def post_comment(url, message):
         page = context.new_page()
         
         try:
-            page.goto(url)
+            page.goto(url, wait_until="domcontentloaded")
+            time.sleep(2)
             print("Looking for comment box...")
             
-            # Use JS to find and focus the contenteditable area inside the shadow dom of shreddit-composer
-            page.evaluate('''() => {
-                const composer = document.querySelector('shreddit-composer');
-                if(composer) {
-                    composer.style.display = 'block';
-                    composer.shadowRoot.querySelector('div[contenteditable]').focus();
-                }
-            }''')
-            time.sleep(2)
+            # Use Playwright's native shadow-piercing locators for Reddit's shreddit-composer
+            editor = page.locator("shreddit-composer div[contenteditable]").first
+            editor.wait_for(state="visible", timeout=10000)
+            editor.click()
+            time.sleep(1)
             
             print("Typing message...")
             page.keyboard.type(message)
-            time.sleep(2)
+            time.sleep(1)
             
             print("Clicking submit...")
-            page.evaluate('''() => {
-                const composer = document.querySelector('shreddit-composer');
-                if(composer) {
-                    composer.shadowRoot.querySelector('button[type="submit"]').click();
-                }
-            }''')
+            submit_btn = page.locator("shreddit-composer button[type='submit']").first
+            submit_btn.click()
             
-            time.sleep(3)
+            time.sleep(4)
             print("Successfully posted to Reddit!")
             
         except Exception as e:
-            print(f"Failed to post: {e}")
+            print(f"Failed to post to Reddit: {e}")
+            page.screenshot(path="reddit_error.png", full_page=True)
+            print("Saved debug screenshot to reddit_error.png")
             
         finally:
             browser.close()

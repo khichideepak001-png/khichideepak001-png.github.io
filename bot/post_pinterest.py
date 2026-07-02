@@ -25,71 +25,40 @@ def create_pin(image_path, title, description, link):
             # Upload image
             print("Uploading image...")
             file_input = page.locator("input[type='file']")
+            file_input.wait_for(state="attached", timeout=10000)
             file_input.set_input_files(image_path)
             time.sleep(2)
             
             # Set Title
             print("Setting title...")
-            title_input = page.locator("input[placeholder*='Add a title']")
+            title_input = page.locator("input[placeholder*='title'], textarea[placeholder*='title']").first
             title_input.fill(title)
             
             # Set Description
             print("Setting description...")
-            desc_input = page.locator("div[contenteditable='true']")
-            desc_input.first.type(description)
+            desc_input = page.locator("div[contenteditable='true'], textarea[placeholder*='description']").first
+            desc_input.fill(description)
             
-            # Set Link — try multiple selectors as Pinterest updates UI frequently
+            # Set Link
             print("Setting destination link...")
-            link_selectors = [
-                "input[placeholder*='destination link']",
-                "input[placeholder*='Add a link']",
-                "input[data-test-id='pin-draft-link']",
-                "input[name='link']",
-                "input[type='url']"
-            ]
-            link_filled = False
-            for sel in link_selectors:
-                try:
-                    inp = page.locator(sel)
-                    inp.wait_for(timeout=5000)
-                    inp.fill(link)
-                    link_filled = True
-                    print(f"  Link filled using: {sel}")
-                    break
-                except:
-                    continue
-            if not link_filled:
-                print("  Warning: Could not fill link field, continuing anyway...")
+            link_input = page.locator("input[placeholder*='link'], input[type='url'], input[name='link']").first
+            link_input.fill(link)
             time.sleep(1)
             
-            # Click Publish — try multiple selectors
+            # Click Publish
             print("Publishing Pin...")
-            save_selectors = [
-                "button[data-test-id='board-dropdown-save-button']",
-                "button[data-test-id='pin-draft-save-button']",
-                "button:has-text('Publish')",
-                "button:has-text('Save')",
-                "div[data-test-id='storyboard-creation-nav-right'] button"
-            ]
-            saved = False
-            for sel in save_selectors:
-                try:
-                    btn = page.locator(sel).first
-                    btn.wait_for(timeout=5000)
-                    btn.click()
-                    saved = True
-                    print(f"  Published using: {sel}")
-                    break
-                except:
-                    continue
-            if not saved:
-                print("  Warning: Could not find publish button")
+            publish_btn = page.get_by_role("button", name="Publish").first
+            if not publish_btn.is_visible():
+                publish_btn = page.get_by_role("button", name="Save").first
             
+            publish_btn.click()
             time.sleep(5)
             print("Successfully published Pin to Pinterest!")
             
         except Exception as e:
             print(f"[Error] Failed to publish Pin: {e}")
+            page.screenshot(path="pinterest_error.png", full_page=True)
+            print("Saved debug screenshot to pinterest_error.png")
             
         finally:
             browser.close()

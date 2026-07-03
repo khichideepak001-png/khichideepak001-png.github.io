@@ -6,14 +6,23 @@ import sys
 import time
 
 def main():
-    target_subs = ["OfficeChairs", "StandingDesk", "workfromhome", "desksetup"]
+    target_subs = [
+        "OfficeChairs", "StandingDesk", "workfromhome", "desksetup",
+        "homeoffice", "Ergonomics", "BackPain", "remotework",
+        "battlestations", "WFH", "pcmasterrace"
+    ]
     leads = []
     
-    # We broaden the keywords heavily to catch buying intent
+    # High-intent keywords targeting actual purchase/pain queries
     keywords = [
-        "recommendation", "advice", "help me choose", "buying", "what should i buy",
-        "pain", "sciatica", "wrist", "neck", "back", "ergonomic", "upgrade",
-        "best chair", "best desk", "cheap chair", "budget desk", "carpal tunnel"
+        "standing desk", "sit stand desk", "adjustable desk", "motorized desk",
+        "ergonomic chair", "office chair", "desk chair", "task chair",
+        "herman miller", "steelcase", "flexispot", "uplift", "autonomous", "secretlab",
+        "posture", "lumbar support", "sciatica", "back pain sitting", "neck pain desk",
+        "wrist pain typing", "carpal tunnel", "monitor arm", "keyboard tray",
+        "best chair under", "chair recommendation", "desk recommendation",
+        "work from home setup", "home office setup", "wfh gear",
+        "8 hours sitting", "comfortable chair", "mesh chair"
     ]
     
     print("Fetching new leads via RSS backdoor...")
@@ -26,7 +35,7 @@ def main():
             headers={'User-Agent': f'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36 ErgoBot/{sub}'}
         )
         try:
-            time.sleep(60)
+            time.sleep(5)
             response = urllib.request.urlopen(req).read()
             root = ET.fromstring(response)
             

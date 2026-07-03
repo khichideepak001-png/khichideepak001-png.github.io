@@ -6,7 +6,7 @@ import time
 import random
 
 # Anti-Ban Settings
-MAX_LEADS_PER_RUN = 2 # NEVER exceed this to protect the account
+MAX_LEADS_PER_RUN = 4 # Increased from 2 to process more leads per cycle
 DELAY_BETWEEN_ACTIONS = (15, 30) # seconds
 DELAY_BETWEEN_LEADS = (60, 120) # seconds
 
@@ -23,7 +23,12 @@ PRODUCTS = {
         "pin_title": "Top Standing Desks 2026 (No More Back Pain)",
         "responses": [
             "If you're dealing with back pain or just need an upgrade, I highly recommend looking into a solid standing desk. It completely changed my posture. Check out this guide, they test the motor noise and stability: {url}?tag=viralbraintea-20",
-            "A high-quality standing desk is the absolute best investment for sciatica or lower back pain. Don't cheap out on the motors. I found this breakdown super helpful when I was shopping: {url}?tag=viralbraintea-20"
+            "A high-quality standing desk is the absolute best investment for sciatica or lower back pain. Don't cheap out on the motors. I found this breakdown super helpful when I was shopping: {url}?tag=viralbraintea-20",
+            "I switched to a standing desk about 6 months ago and my lower back pain is basically gone. The key is getting one with a quiet motor and good stability. This comparison helped me narrow it down: {url}?tag=viralbraintea-20",
+            "Went through this exact same decision last year. Ended up going with a dual-motor setup and it's been rock solid. If you want to compare specs and real measurements, this guide breaks it all down: {url}?tag=viralbraintea-20",
+            "My PT actually recommended I try alternating between sitting and standing throughout the day. Game changer for my herniated disc. Here's the guide I used to pick mine, they actually measure wobble and noise: {url}?tag=viralbraintea-20",
+            "One thing people don't realize is how much motor quality varies between brands. Some are whisper-quiet, others sound like a blender. This breakdown compares them all with actual dB readings: {url}?tag=viralbraintea-20",
+            "Standing desks saved my sanity working from home. I was getting terrible hip flexor tightness from sitting 10+ hours. If you want honest rankings (not sponsored), this one's pretty good: {url}?tag=viralbraintea-20"
         ]
     },
     "chair": {
@@ -32,7 +37,12 @@ PRODUCTS = {
         "pin_title": "Best Ergonomic Office Chairs 2026",
         "responses": [
             "I went through the same thing with neck and back pain. The Herman Miller is great, but there are actually some budget clones that perform 90% as well. This ranking guide helped me decide: {url}?tag=viralbraintea-20",
-            "Honestly, upgrading to a proper ergonomic chair is night and day for spine alignment. It's totally worth the investment. Here's a really solid breakdown of the best ones this year: {url}?tag=viralbraintea-20"
+            "Honestly, upgrading to a proper ergonomic chair is night and day for spine alignment. It's totally worth the investment. Here's a really solid breakdown of the best ones this year: {url}?tag=viralbraintea-20",
+            "Spent 3 months researching ergonomic chairs before pulling the trigger. The difference in lumbar support between a $200 and $500 chair is massive. This guide compares them all side by side: {url}?tag=viralbraintea-20",
+            "As someone who sits 8-10 hours a day coding, investing in a proper chair was the best decision I made. Mesh backs are a must if you run hot. Here's a solid comparison: {url}?tag=viralbraintea-20",
+            "I had the same question! Ended up going with a chair that has adjustable lumbar depth (not just height). Makes a huge difference. This guide ranks them by actual ergonomic features: {url}?tag=viralbraintea-20",
+            "My chiropractor literally told me to stop using my gaming chair and get something with proper lumbar support. This comparison helped me find one without breaking the bank: {url}?tag=viralbraintea-20",
+            "Don't sleep on seat depth adjustment \u2014 it's the most underrated feature for people under 5'8. This breakdown covers all the adjustability features for each chair: {url}?tag=viralbraintea-20"
         ]
     }
 }
@@ -58,17 +68,35 @@ def safe_sleep(range_tuple):
 def main():
     print("=== STARTING AUTONOMOUS BOT LOOP ===")
     
-    # 1. Fetch new leads
-    print("\n[1/4] Running fetch_leads.py...")
-    subprocess.run([sys.executable, os.path.join(BOT_DIR, "fetch_leads.py")])
+    # 1. Fetch new leads using Agent-Reach (separates reading from posting)
+    print("\n[1/4] Running fetch_leads_ar.py (Agent-Reach powered Reddit fetcher)...")
+    subprocess.run([sys.executable, os.path.join(BOT_DIR, "fetch_leads_ar.py")])
+    
+    print("\n[1/4] Running fetch_quora_leads.py (Quora)...")
+    subprocess.run([sys.executable, os.path.join(BOT_DIR, "fetch_quora_leads.py")])
     
     # 2. Read leads
-    if not os.path.exists(LEADS_FILE):
-        print("No leads file found. Exiting.")
+    leads = []
+    if os.path.exists(LEADS_FILE):
+        with open(LEADS_FILE, 'r') as f:
+            reddit_leads = json.load(f)
+            # Tag Reddit leads explicitly if not tagged
+            for l in reddit_leads:
+                l['platform'] = 'Reddit'
+                l['id'] = l.get('id', l.get('url'))
+            leads.extend(reddit_leads)
+            
+    QUORA_FILE = os.path.join(BOT_DIR, "quora_leads.json")
+    if os.path.exists(QUORA_FILE):
+        with open(QUORA_FILE, 'r', encoding='utf-8') as f:
+            quora_leads = json.load(f)
+            for l in quora_leads:
+                l['id'] = l.get('id', l.get('url')) # Quora leads use URL as ID
+            leads.extend(quora_leads)
+            
+    if not leads:
+        print("No leads found. Exiting.")
         return
-        
-    with open(LEADS_FILE, 'r') as f:
-        leads = json.load(f)
         
     history = load_history()
     
@@ -102,15 +130,21 @@ def main():
         # Pick random response and format it
         reply_msg = random.choice(prod["responses"]).replace("{url}", prod["url"])
         
-        # Step A: Post to Reddit
-        print("\n[A] Executing post_reply.py...")
-        subprocess.run([sys.executable, os.path.join(BOT_DIR, "post_reply.py"), lead["url"], reply_msg])
+        # Step A: Post to Platform
+        platform = lead.get('platform', 'Reddit')
+        if platform == 'Quora':
+            print("\n[A] Executing post_quora_reply.py...")
+            subprocess.run([sys.executable, os.path.join(BOT_DIR, "post_quora_reply.py"), lead["url"], reply_msg])
+        else:
+            print("\n[A] Executing post_reply.py (Reddit)...")
+            subprocess.run([sys.executable, os.path.join(BOT_DIR, "post_reply.py"), lead["url"], reply_msg])
         
         safe_sleep(DELAY_BETWEEN_ACTIONS)
         
         # Step B: Pin to Pinterest
         print("\n[B] Executing post_pinterest.py...")
-        pin_desc = f"Just recommended this to someone on r/{lead['sub']}. If you are looking for a {category.lower()}, check this out! #workfromhome #ergo"
+        source_context = f"r/{lead['sub']}" if platform == 'Reddit' else "Quora"
+        pin_desc = f"Just recommended this to someone on {source_context}. If you are looking for a {category.lower()}, check this out! #workfromhome #ergo"
         subprocess.run([
             sys.executable, 
             os.path.join(BOT_DIR, "post_pinterest.py"), 

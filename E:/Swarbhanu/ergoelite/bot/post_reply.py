@@ -1,7 +1,21 @@
+"""
+Reddit reply poster with stealth browser + human-like behavior.
+Uses playwright-stealth to bypass bot detection and simulates
+natural typing, scrolling, and click patterns.
+"""
 from playwright.sync_api import sync_playwright
 import os
 import sys
 import time
+import random
+
+# Import our stealth utilities
+sys.path.insert(0, os.path.dirname(__file__))
+from stealth_utils import (
+    create_stealth_browser, human_delay, human_type,
+    human_scroll, human_click
+)
+
 
 def post_comment(url, message):
     state_path = os.path.join(os.path.dirname(__file__), "state.json")
@@ -9,56 +23,71 @@ def post_comment(url, message):
         print("Error: state.json not found.")
         sys.exit(1)
         
-    print(f"Navigating to {url}...")
+    print(f"[Reddit] Navigating to {url}...")
     with sync_playwright() as p:
-        browser = p.chromium.launch(
+        browser, context, page = create_stealth_browser(
+            p,
+            browser_type="chromium",
             headless=True,
-            channel="chrome",
-            args=["--disable-blink-features=AutomationControlled"]
-        )
-        context = browser.new_context(
             storage_state=state_path,
-            user_agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+            channel="chrome"
         )
-        page = context.new_page()
         
         try:
-            page.goto(url)
-            print("Looking for comment box...")
+            # Navigate with a realistic referrer
+            page.goto(url, wait_until="domcontentloaded", referer="https://www.reddit.com/")
+            human_delay(2.0, 4.0)
             
-            # Use JS to find and focus the contenteditable area inside the shadow dom of shreddit-composer
-            page.evaluate('''() => {
-                const composer = document.querySelector('shreddit-composer');
-                if(composer) {
-                    composer.style.display = 'block';
-                    composer.shadowRoot.querySelector('div[contenteditable]').focus();
-                }
-            }''')
-            time.sleep(2)
+            # Simulate reading the post first (scroll down a bit)
+            print("[Reddit] Simulating reading the post...")
+            human_scroll(page, "down", random.randint(200, 400))
+            human_delay(1.5, 3.0)
+            human_scroll(page, "down", random.randint(100, 300))
+            human_delay(1.0, 2.0)
             
-            print("Typing message...")
-            page.keyboard.type(message)
-            time.sleep(2)
+            # Scroll back up to find the comment box
+            human_scroll(page, "up", random.randint(100, 200))
+            human_delay(0.5, 1.0)
             
-            print("Clicking submit...")
-            page.evaluate('''() => {
-                const composer = document.querySelector('shreddit-composer');
-                if(composer) {
-                    composer.shadowRoot.querySelector('button[type="submit"]').click();
-                }
-            }''')
+            print("[Reddit] Looking for comment box...")
             
-            time.sleep(3)
-            print("Successfully posted to Reddit!")
+            # Use Playwright's native shadow-piercing locators for Reddit's shreddit-composer
+            editor = page.locator("shreddit-composer div[contenteditable]").first
+            editor.wait_for(state="visible", timeout=15000)
+            
+            # Click the editor with a natural delay
+            editor.scroll_into_view_if_needed()
+            human_delay(0.5, 1.0)
+            editor.click()
+            human_delay(0.5, 1.5)
+            
+            print("[Reddit] Typing message with human-like speed...")
+            # Type the message character by character with natural delays
+            human_type(page, message, min_delay_ms=25, max_delay_ms=90)
+            
+            # Pause after typing (like re-reading what you wrote)
+            human_delay(1.5, 3.0)
+            
+            print("[Reddit] Clicking submit...")
+            submit_btn = page.locator("shreddit-composer button[type='submit']").first
+            submit_btn.wait_for(state="visible", timeout=10000)
+            human_delay(0.3, 0.8)
+            submit_btn.click()
+            
+            human_delay(3.0, 5.0)
+            print("[Reddit] Successfully posted comment! (OK)")
             
         except Exception as e:
-            print(f"Failed to post: {e}")
+            print(f"[Reddit] Failed to post: {e}")
+            page.screenshot(path=os.path.join(os.path.dirname(__file__), "reddit_error.png"), full_page=True)
+            print("[Reddit] Saved debug screenshot to reddit_error.png")
             
         finally:
             browser.close()
 
+
 if __name__ == "__main__":
     if len(sys.argv) < 3:
-        print("Usage: python post_reply.py <reddit_url> \"<your message>\"")
+        print('Usage: python post_reply.py <reddit_url> "<your message>"')
         sys.exit(1)
     post_comment(sys.argv[1], sys.argv[2])

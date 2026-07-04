@@ -15,6 +15,8 @@ import subprocess
 import sys
 import time
 import random
+import urllib.request
+import xml.etree.ElementTree as ET
 
 # Agent-Reach bundles feedparser
 try:
@@ -24,28 +26,45 @@ try:
 except ImportError:
     HAS_FEEDPARSER = False
     print("[Agent-Reach] feedparser not available, using raw XML parsing")
-    import urllib.request
-    import xml.etree.ElementTree as ET
 
 BOT_DIR = os.path.dirname(__file__)
 
-# High-intent keywords (only match genuinely relevant posts)
+# High-intent keywords — broader net to catch more leads
 KEYWORDS = [
+    # Product-specific (highest conversion)
     "standing desk", "sit stand desk", "adjustable desk", "motorized desk",
     "ergonomic chair", "office chair", "desk chair", "task chair",
     "herman miller", "steelcase", "flexispot", "uplift", "autonomous", "secretlab",
-    "posture", "lumbar support", "sciatica", "back pain sitting", "neck pain desk",
-    "wrist pain typing", "carpal tunnel", "monitor arm", "keyboard tray",
+    "branch chair", "sihoo", "hbada", "hon ignition",
+    # Pain-point keywords (high buyer intent)
+    "posture", "lumbar support", "sciatica", "back pain", "neck pain",
+    "wrist pain", "carpal tunnel", "monitor arm", "keyboard tray",
+    "shoulder pain desk", "hip pain sitting", "tailbone pain", "coccyx",
+    # Buying keywords (ready to purchase)
     "best chair under", "chair recommendation", "desk recommendation",
-    "work from home setup", "home office setup", "wfh gear",
-    "8 hours sitting", "comfortable chair", "mesh chair",
+    "which chair", "which desk", "should i buy", "worth it",
+    "chair advice", "desk advice", "upgrade my chair", "upgrade my desk",
+    # Setup keywords
+    "work from home setup", "home office setup", "wfh gear", "wfh setup",
+    "remote work setup", "desk setup", "office setup",
+    # Duration keywords (signals heavy use = high intent)
+    "8 hours sitting", "10 hours", "long hours", "all day",
+    "comfortable chair", "mesh chair", "gaming chair office",
+    # Comparison keywords
+    "aeron vs", "leap vs", "embody vs", "flexispot vs", "uplift vs",
+    "chair comparison", "desk comparison",
 ]
 
-# Target subreddits
+# Expanded target subreddits
 TARGET_SUBS = [
     "OfficeChairs", "StandingDesk", "workfromhome", "desksetup",
     "homeoffice", "Ergonomics", "BackPain", "remotework",
     "battlestations", "WFH", "pcmasterrace",
+    # New high-traffic subs
+    "AskMen", "AskWomen", "gaming", "buildapc", "programming",
+    "sysadmin", "webdev", "cscareerquestions", "freelance",
+    "digitalnomad", "Posture", "ChronicPain", "physicaltherapy",
+    "buyitforlife", "Frugal", "malelivingspace",
 ]
 
 

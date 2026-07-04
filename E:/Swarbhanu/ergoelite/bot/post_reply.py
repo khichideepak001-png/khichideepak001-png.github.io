@@ -51,13 +51,31 @@ def post_comment(url, message):
             
             print("[Reddit] Looking for comment box...")
             
-            # Use Playwright's native shadow-piercing locators for Reddit's shreddit-composer
-            editor = page.locator("shreddit-composer div[contenteditable]").first
-            editor.wait_for(state="visible", timeout=15000)
+            # Reddit's comment composer is initially collapsed.
+            # We need to click the placeholder first to expand it.
+            try:
+                # Try clicking the collapsed placeholder to expand the editor
+                placeholder = page.locator("shreddit-composer [placeholder='Join the conversation'], shreddit-composer [aria-placeholder='Join the conversation']").first
+                placeholder.scroll_into_view_if_needed()
+                human_delay(0.3, 0.6)
+                placeholder.click()
+                human_delay(1.0, 2.0)
+            except Exception:
+                # Alternative: click the composer wrapper itself
+                try:
+                    composer = page.locator("shreddit-composer").first
+                    composer.scroll_into_view_if_needed()
+                    human_delay(0.3, 0.6)
+                    composer.click()
+                    human_delay(1.0, 2.0)
+                except Exception:
+                    pass
             
-            # Click the editor with a natural delay
-            editor.scroll_into_view_if_needed()
-            human_delay(0.5, 1.0)
+            # Now the editor should be expanded and visible
+            editor = page.locator("shreddit-composer div[contenteditable='true']").first
+            editor.wait_for(state="visible", timeout=20000)
+            
+            # Click the editor to focus
             editor.click()
             human_delay(0.5, 1.5)
             
@@ -69,7 +87,7 @@ def post_comment(url, message):
             human_delay(1.5, 3.0)
             
             print("[Reddit] Clicking submit...")
-            submit_btn = page.locator("shreddit-composer button[type='submit']").first
+            submit_btn = page.locator("shreddit-composer button[type='submit'], shreddit-composer button:has-text('Comment')").first
             submit_btn.wait_for(state="visible", timeout=10000)
             human_delay(0.3, 0.8)
             submit_btn.click()

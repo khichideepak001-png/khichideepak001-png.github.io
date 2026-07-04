@@ -6,9 +6,9 @@ import time
 import random
 
 # Anti-Ban Settings
-MAX_LEADS_PER_RUN = 4 # Increased from 2 to process more leads per cycle
-DELAY_BETWEEN_ACTIONS = (15, 30) # seconds
-DELAY_BETWEEN_LEADS = (60, 120) # seconds
+MAX_LEADS_PER_RUN = 6 # Aggressive but safe — 6 posts per hour cycle
+DELAY_BETWEEN_ACTIONS = (12, 25) # seconds
+DELAY_BETWEEN_LEADS = (45, 90) # seconds
 
 # Base paths
 BOT_DIR = os.path.dirname(__file__)
@@ -117,11 +117,30 @@ def main():
         print(f"Subreddit: {lead['sub']}")
         print(f"Title: {lead['title']}")
         
-        # Decide product
-        if "desk" in lead['sub'].lower() or "standing" in lead['title'].lower():
+        # Decide product — smarter keyword matching
+        title_lower = lead.get('title', '').lower()
+        sub_lower = lead.get('sub', '').lower()
+        query_lower = lead.get('query', '').lower()
+        combined = f"{title_lower} {sub_lower} {query_lower}"
+        
+        desk_signals = ["desk", "standing", "uplift", "flexispot", "sit stand", "motorized", "adjustable height"]
+        chair_signals = ["chair", "aeron", "leap", "embody", "secretlab", "steelcase", "lumbar", "seat", "sitting"]
+        
+        is_desk = any(s in combined for s in desk_signals)
+        is_chair = any(s in combined for s in chair_signals)
+        
+        if is_desk and not is_chair:
             prod = PRODUCTS["desk"]
             category = "Standing Desk"
+        elif is_chair and not is_desk:
+            prod = PRODUCTS["chair"]
+            category = "Ergonomic Chair"
+        elif "back pain" in combined or "posture" in combined or "sciatica" in combined:
+            # Pain keywords — chairs convert better for pain
+            prod = PRODUCTS["chair"]
+            category = "Ergonomic Chair"
         else:
+            # Default to chair (higher commission)
             prod = PRODUCTS["chair"]
             category = "Ergonomic Chair"
             

@@ -72,13 +72,13 @@ if __name__ == "__main__":
     
     video_path = os.path.join(os.path.dirname(__file__), "assets", "tiktok_short.mp4")
     
-    title = "Stop the Wrist Pain! 🛑 Do THIS instead. #shorts #ergonomics"
+    title = "Stop buying the Herman Miller Aeron 🛑 Do THIS instead. #shorts #ergonomics"
     description = (
-        "Are you getting Carpal Tunnel from working at your desk?\n\n"
-        "Check out the Vertical Ergonomic Mouse here: https://khichideepak001-png.github.io/reviews/accessories.html \n\n"
-        "A standard mouse twists your median nerve causing severe pain over time. Switch to a handshake mouse!"
+        "Don't spend $1,700 on a Herman Miller chair until you check out these budget alternatives!\n\n"
+        "Check out the full ranked list here: https://khichideepak001-png.github.io/reviews/herman-miller-alternatives.html \n\n"
+        "These chairs provide the exact same back support for under $400. Save your spine and your wallet!"
     )
-    tags = ["ergonomics", "desk setup", "work from home", "wrist pain", "tech"]
+    tags = ["ergonomics", "desk setup", "work from home", "herman miller", "office chair", "tech"]
     
     if os.path.exists(video_path):
         upload_video(youtube_service, video_path, title, description, tags)

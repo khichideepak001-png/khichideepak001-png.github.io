@@ -3,12 +3,12 @@ import os
 import time
 
 def capture_slides(output_dir):
-    print("Capturing multiple slides for the video...")
+    print("Capturing slides for all 7 Herman Miller Alternatives...")
     os.makedirs(output_dir, exist_ok=True)
     
     with sync_playwright() as p:
         browser = p.chromium.launch(headless=True)
-        # Mobile viewport
+        # Mobile viewport for TikTok/Reels format
         context = browser.new_context(
             viewport={'width': 1080, 'height': 1920},
             device_scale_factor=2,
@@ -16,42 +16,32 @@ def capture_slides(output_dir):
         )
         page = context.new_page()
         
-        # SLIDE 1: Our Website (Accessories)
         base_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
-        local_url = f"file:///{base_path}/reviews/accessories.html".replace('\\', '/')
-        print("Capturing Slide 1 (Website Top)...")
+        local_url = f"file:///{base_path}/reviews/herman-miller-alternatives.html".replace('\\', '/')
         page.goto(local_url)
         time.sleep(1)
-        page.screenshot(path=os.path.join(output_dir, "slide1.png"))
         
-        # SLIDE 2: Our Website (Scrolled down to the Vertical Mouse)
-        print("Capturing Slide 2 (Product Card)...")
-        page.evaluate("window.scrollBy(0, 500)")
-        time.sleep(1)
-        page.screenshot(path=os.path.join(output_dir, "slide2.png"))
+        # 1. Hero Slide
+        print("Capturing Slide: Hero")
+        page.evaluate("window.scrollTo(0, 0)")
+        time.sleep(0.5)
+        page.screenshot(path=os.path.join(output_dir, "slide_hero.png"))
         
-        # SLIDE 3: Amazon Product Page
-        amazon_url = "https://www.amazon.com/dp/B0FX2QJ6B4"
-        print("Capturing Slide 3 (Amazon Product)...")
-        try:
-            # wait_until="domcontentloaded" prevents timeout from background trackers
-            page.goto(amazon_url, wait_until="domcontentloaded", timeout=15000) 
-            time.sleep(3) # Let images load
+        # 2. Individual Chairs (We'll scroll to each .ranked-item)
+        chairs = page.locator(".ranked-item")
+        count = chairs.count()
+        print(f"Found {count} chairs to capture.")
+        
+        for i in range(count):
+            print(f"Capturing Chair {i+1}...")
+            chair_locator = chairs.nth(i)
+            chair_locator.scroll_into_view_if_needed()
             
-            # Hide banner if present
-            page.evaluate("""
-                const banner = document.querySelector('#nav-bb-button');
-                if(banner) banner.click();
-            """)
-            time.sleep(1)
-            page.screenshot(path=os.path.join(output_dir, "slide3.png"))
-        except Exception as e:
-            print(f"Error capturing Amazon: {e}")
-            # Fallback to taking another screenshot of our site if Amazon blocks headless
-            page.goto(local_url)
-            page.evaluate("window.scrollBy(0, 1000)")
-            time.sleep(1)
-            page.screenshot(path=os.path.join(output_dir, "slide3.png"))
+            # Slight offset to center the block on a mobile screen
+            page.evaluate("window.scrollBy(0, -100)") 
+            time.sleep(1.0)
+            
+            page.screenshot(path=os.path.join(output_dir, f"slide_chair_{i+1}.png"))
             
         browser.close()
         print("Slides captured successfully.")

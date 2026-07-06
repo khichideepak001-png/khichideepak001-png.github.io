@@ -67,33 +67,40 @@ def create_slideshow_video(slide_data, audio_path, bg_music_path, output_path):
 
 async def main():
     assets_dir = os.path.join(os.path.dirname(__file__), "assets")
-    artifacts_dir = r"C:\Users\deepa\.gemini\antigravity\brain\30c140c9-abcb-4d9f-a04c-96e38a11d532"
     os.makedirs(assets_dir, exist_ok=True)
     
-    script = (
-        "If you work from home and your wrist hurts after 5 hours at your desk, "
-        "your standard mouse is twisting your median nerve. "
-        "You need to use a vertical ergonomic mouse. It keeps your arm in a natural handshake position. "
-        "Link in bio to get yours under 30 dollars."
-    )
-    
-    audio_file = os.path.join(assets_dir, "voiceover.mp3")
     bg_file = os.path.join(assets_dir, "bg_music.mp3")
-    video_file = os.path.join(assets_dir, "tiktok_short.mp4")
     
-    # Custom timed slides matching the voiceover
-    # Total script is ~11 seconds
-    slide_data = [
-        # Intro: Pain point (4 seconds)
-        {"path": os.path.join(artifacts_dir, "wrist_pain_1781267641197.png"), "duration": 4.5},
-        # Fix: Vertical Mouse (4 seconds)
-        {"path": os.path.join(artifacts_dir, "vertical_mouse_1781267651356.png"), "duration": 4.5},
-        # Call to Action: Website Product Card (Remaining time)
-        {"path": os.path.join(assets_dir, "slide2.png"), "duration": 3.0}
-    ]
-    
-    await generate_voiceover(script, audio_file)
-    create_slideshow_video(slide_data, audio_file, bg_file, video_file)
+    # We captured 7 chairs
+    for i in range(1, 8):
+        print(f"\n--- Generating Video {i}/7 ---")
+        script = (
+            f"Stop buying the Herman Miller Aeron. Yes it's the best chair in the world, "
+            f"but it costs seventeen hundred dollars. This is alternative number {i} that gives you "
+            f"the exact same back support for a fraction of the price. Check the link in my bio "
+            f"for the full ranked list and save a thousand bucks today."
+        )
+        
+        audio_file = os.path.join(assets_dir, f"voiceover_{i}.mp3")
+        video_file = os.path.join(assets_dir, f"tiktok_short_{i}.mp4")
+        
+        slide_data = [
+            # Intro hook (0-5 seconds)
+            {"path": os.path.join(assets_dir, "slide_hero.png"), "duration": 5.0},
+            # Specific Chair (5-11 seconds)
+            {"path": os.path.join(assets_dir, f"slide_chair_{i}.png"), "duration": 6.0},
+            # CTA/End (Remaining time, loop back to hero)
+            {"path": os.path.join(assets_dir, "slide_hero.png"), "duration": 5.0}
+        ]
+        
+        # Verify the chair slide exists before rendering
+        if not os.path.exists(slide_data[1]["path"]):
+            print(f"Skipping video {i} because {slide_data[1]['path']} does not exist.")
+            continue
+            
+        await generate_voiceover(script, audio_file)
+        create_slideshow_video(slide_data, audio_file, bg_file, video_file)
+        print(f"Video {i} ready: {video_file}")
 
 if __name__ == "__main__":
     asyncio.run(main())

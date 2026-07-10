@@ -46,7 +46,7 @@ def upload_video(youtube, file_path, title, description, tags):
             "categoryId": "22" # People & Blogs (or 26 How-to & Style)
         },
         "status": {
-            "privacyStatus": "private", # We use 'private' for the initial test so you can verify it
+            "privacyStatus": "public", # GOING LIVE!
             "selfDeclaredMadeForKids": False
         }
     }
@@ -70,7 +70,7 @@ def upload_video(youtube, file_path, title, description, tags):
 if __name__ == "__main__":
     youtube_service = get_authenticated_service()
     
-    video_path = os.path.join(os.path.dirname(__file__), "assets", "tiktok_short.mp4")
+    video_path = os.path.join(os.path.dirname(__file__), "assets", "tiktok_short_1.mp4")
     
     title = "Stop buying the Herman Miller Aeron 🛑 Do THIS instead. #shorts #ergonomics"
     description = (

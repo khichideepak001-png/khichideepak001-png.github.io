@@ -59,11 +59,11 @@ def upload_to_instagram_reels(access_token, ig_user_id, video_url, caption):
 
 if __name__ == "__main__":
     # --- CONFIGURATION ---
-    ACCESS_TOKEN = "EAAVBQC1NZBLMBR3DZBaXdGcYQJA8PhelINYTRIUXhmt74QdZBNZBIw7NoeEQmcjEKfT2GnWZAiNdNPKBZAA4SZCvx1dzW1thwKFP4VYOb0uhkBJ5NgiO0IThwnQurR7lavDO8vcOmYl3b2jiSagJO226aBIcVjejDdeqKOMP8B0iamjSIQsbvrL7bxoZCFtKTPFMG6w11oyHbqKbTZBQEgqrqZCRSZAzZAZA1nLjl60m7G3kZD"
+    ACCESS_TOKEN = "EAAVBQC1NZBLMBR2IIq8ZAPo6jt59tP5QI3TPTiL15L4HQ7Sf8RgRNcM73GTAhJtBSAsC0BhppItOVekscWlEbcRy3IgrwmV5cn3gYp0yAl5IaQKKKG6wOnu00AGNhwauniBORM5UW0Tz1hJucQfRUEK5ZBVghhU1JmXTmSGLJXZAt0DzsMASt1yF9v0L47cP4yoCRdX9rt4ZA72mSms7YnO1KH681o77UuBo9bchIjzEZD"
     IG_USER_ID = "17841434096813307"
     
     # Meta Graph API requires the video to be hosted on a public URL.
-    PUBLIC_VIDEO_URL = "https://khichideepak001-png.github.io/bot/video/assets/tiktok_short_1.mp4"
+    PUBLIC_VIDEO_URL = "https://khichideepak001-png.github.io/bot/video/assets/tiktok_insta.mp4"
     
     CAPTION = (
         "Stop buying the Herman Miller Aeron 🛑 Do THIS instead. \n\n"
